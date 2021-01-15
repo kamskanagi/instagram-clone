@@ -3,10 +3,18 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Auth;
+use App\Models\Post;
+use Intervention\Image\Facades\Image;
 
 class PostsController extends Controller
 {
+
+    // will aloow  only the authenticated user to see this page
+   public function __construct(){
+
+    $this->middleware('auth');
+   }
+
     public function create(){
 
         return view('posts/create');
@@ -16,21 +24,35 @@ class PostsController extends Controller
 
         //dd(request()->all());   // this will show you the sen inputs
         $data = request()->validate([  // in this line we are trying to validate the input field
-            'another' => '',
-            'caption'=>'required',
-            'image'=>['required','image'],
+            //'another' => '',
+           'caption' => 'required',
+            'image' => ['required','image'],
 
         ]);
-       // auth()->user()->posts()->create($data);
-      // \App\Models\Post::create($data);
 
-       //dd(request()->all());
+        $image_path= request('image')->store('upload', 'public');
+
+        auth()->user()->posts()->create([
+            'caption' => $data['caption'],
+            'image' => $image_path, 
+            ]);
+
+            return redirect('/profile/' . auth()->user()->id);
+
+            $image = Image::make(public_path("storage/{$image_path}"))->fit(1200, 1200); //resizing the images
+            $image->save();
+      // \App\Models\Post::create($data);
        // return view('posts/create');
 
        //how to store 
-       $data['user_id'] = Auth::id();
+      
+    }
 
-       $post = Post::create($data);
-       
+
+    public function show(\App\Models\Post $post)
+
+    {
+    // dd($post);
+        return view('posts.show', compact('post'));
     }
 }
