@@ -8,10 +8,16 @@
             <img src="/storage/{{$post->image}}" alt="" class="w-100">
         </div>
         <div class="col-4">
-            <div>
-                <h3>{{ $post->user->username}}</h3>
-                <p>{{$post->caption}}</p>
+            <div class="d-flex align-item-center">
+                <div class="pr-3">
+                    <img src="/storage/{{$post->user->profile->image}}" alt="" style= "max-width:40px; height: auto;" class="rounded-circle w-100">
+                 </div>
+               
+                <div class="font-weight-bold"><a href="/profile/{{$post->user->id}}"><span class="text-dark">{{$post->user->username}}</span></a></div>
+                
             </div>
+            <hr>
+                <p><span class="font-weight-bold"><a href="/profile/{{$post->user->id}}"><span class="text-dark">{{$post->user->username}}</span></a></span> {{$post->caption}}</p>
         </div>
     </div>
     
